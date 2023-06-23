@@ -1,0 +1,123 @@
+package trabalho;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class CadastroGUI extends JFrame {
+    private JTextField textFieldNome;
+    private JTextField textFieldTelefone;
+    private JComboBox<String> comboBoxTipoAluno;
+    private JTextField textFieldCurso;
+    private JRadioButton radioButtonMasculino;
+    private JRadioButton radioButtonFeminino;
+    private Aluno aluno;
+
+    public CadastroGUI(Conexao conexao) {
+        setTitle("Cadastro de Aluno");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(400, 300);
+        setLocationRelativeTo(null);
+
+        this.aluno = new Aluno(conexao);
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = new Insets(5, 5, 5, 5); // Espaçamento interno entre os componentes
+
+        JLabel labelNome = new JLabel("Nome:");
+        JLabel labelTelefone = new JLabel("Telefone:");
+        JLabel labelTipoAluno = new JLabel("Tipo de Aluno:");
+        JLabel labelCurso = new JLabel("Curso:");
+        JLabel labelSexo = new JLabel("Sexo:");
+
+        textFieldNome = new JTextField(20);
+        textFieldTelefone = new JTextField(20);
+
+        String[] tiposAluno = {"Regular", "Especial"};
+        comboBoxTipoAluno = new JComboBox<>(tiposAluno);
+
+        textFieldCurso = new JTextField(20);
+
+        radioButtonMasculino = new JRadioButton("Masculino");
+        radioButtonFeminino = new JRadioButton("Feminino");
+
+        ButtonGroup buttonGroupSexo = new ButtonGroup();
+        buttonGroupSexo.add(radioButtonMasculino);
+        buttonGroupSexo.add(radioButtonFeminino);
+
+        JButton buttonCadastrar = new JButton("Cadastrar");
+        buttonCadastrar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String nome = textFieldNome.getText();
+                String telefone = textFieldTelefone.getText();
+                String tipoAluno = comboBoxTipoAluno.getSelectedItem().toString();
+                String curso = textFieldCurso.getText();
+                char sexo = radioButtonMasculino.isSelected() ? 'M' : 'F';
+
+                aluno.inserirAluno(nome, telefone, tipoAluno, curso, sexo);
+
+                // Exemplo: Exibir uma mensagem de sucesso
+                JOptionPane.showMessageDialog(null, "Aluno cadastrado com sucesso!");
+            }
+        });
+
+        constraints.gridx = 0; // Coluna 0
+        constraints.gridy = 0; // Linha 0
+        panel.add(labelNome, constraints);
+
+        constraints.gridx = 1; // Coluna 1
+        panel.add(textFieldNome, constraints);
+
+        constraints.gridx = 0; // Coluna 0
+        constraints.gridy = 1; // Linha 1
+        panel.add(labelTelefone, constraints);
+
+        constraints.gridx = 1; // Coluna 1
+        panel.add(textFieldTelefone, constraints);
+
+        constraints.gridx = 0; // Coluna 0
+        constraints.gridy = 2; // Linha 2
+        panel.add(labelTipoAluno, constraints);
+
+        constraints.gridx = 1; // Coluna 1
+        panel.add(comboBoxTipoAluno, constraints);
+
+        constraints.gridx = 0; // Coluna 0
+        constraints.gridy = 3; // Linha 3
+        panel.add(labelCurso, constraints);
+
+        constraints.gridx = 1; // Coluna 1
+        panel.add(textFieldCurso, constraints);
+
+        constraints.gridx = 0; // Coluna 0
+        constraints.gridy = 4; // Linha 4
+        panel.add(labelSexo, constraints);
+
+        constraints.gridx = 1; // Coluna 1
+        panel.add(radioButtonMasculino, constraints);
+
+        constraints.gridx = 2; // Coluna 2
+        panel.add(radioButtonFeminino, constraints);
+
+        constraints.gridx = 1; // Coluna 1
+        constraints.gridy = 5; // Linha 5
+        panel.add(buttonCadastrar, constraints);
+
+        add(panel);
+        pack();
+        
+        
+    }
+    
+    public void abrirInterface() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                setVisible(true);
+            }
+        });
+    
+    }
+    
+}
