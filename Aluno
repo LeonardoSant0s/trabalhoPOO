@@ -1,0 +1,43 @@
+package trabalho;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class Aluno {
+    private Conexao conexao;
+
+    public Aluno(Conexao conexao) {
+        this.conexao = conexao;
+    }
+
+    public void listarAlunos() {
+        try {
+            conexao.conectar();
+            String query = "SELECT * FROM aluno ORDER BY nome";
+            ResultSet resultSet = conexao.executarQuery(query);
+            while (resultSet.next()) {
+                System.out.println("ID: " + resultSet.getString("id")
+                        + " - 1)Nome: " + resultSet.getString("nome")
+                        + " 2)Telefone: " + resultSet.getString("telefone")
+                        + " 3)Tipo de Aluno: " + resultSet.getString("tipoAluno")
+                        + " 4)Curso: " + resultSet.getString("curso")
+                        + " 5)Sexo: " + resultSet.getString("sexo"));
+            }
+            conexao.desconectar();
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println("Erro: " + e.getMessage());
+        }
+    }
+
+    public void inserirAluno(String nome, String telefone, String tipoAluno, String curso, char sexo) {
+        try {
+            conexao.conectar();
+            String query = "INSERT INTO aluno (nome, telefone, tipoAluno, curso, sexo) VALUES ('"
+                    + nome + "', '" + telefone + "', '" + tipoAluno + "', '" + curso + "', '" + sexo + "')";
+            conexao.executarUpdate(query);
+            conexao.desconectar();
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println("Erro: " + e.getMessage());
+        }
+    }
+}
