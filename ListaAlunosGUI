@@ -1,0 +1,58 @@
+package trabalho;
+
+import javax.swing.*;
+import java.awt.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
+
+public class ListaAlunosGUI extends JFrame {
+    private JTable table;
+
+    public ListaAlunosGUI(Conexao conexao) {
+        setTitle("Lista de Alunos");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 400);
+        setLocationRelativeTo(null);
+
+        try {
+            ResultSet resultSet = conexao.executarQuery("SELECT * FROM aluno ORDER BY nome");
+            Vector<String> columnNames = getColumnNames(resultSet);
+            Vector<Vector<Object>> data = extractData(resultSet);
+
+            table = new JTable(data, columnNames);
+            JScrollPane scrollPane = new JScrollPane(table);
+            getContentPane().add(scrollPane, BorderLayout.CENTER);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao obter os dados dos alunos: " + e.getMessage());
+        }
+    }
+
+    private Vector<Vector<Object>> extractData(ResultSet resultSet) throws SQLException {
+        Vector<Vector<Object>> data = new Vector<>();
+
+        while (resultSet.next()) {
+            Vector<Object> rowData = new Vector<>();
+            rowData.add(resultSet.getInt("id"));
+            rowData.add(resultSet.getString("nome"));
+            rowData.add(resultSet.getString("telefone"));
+            rowData.add(resultSet.getString("tipoAluno"));
+            rowData.add(resultSet.getString("curso"));
+            rowData.add(resultSet.getString("sexo"));
+            data.add(rowData);
+        }
+
+        return data;
+    }
+
+    private Vector<String> getColumnNames(ResultSet resultSet) throws SQLException {
+        Vector<String> columnNames = new Vector<>();
+
+        int columnCount = resultSet.getMetaData().getColumnCount();
+        for (int i = 1; i <= columnCount; i++) {
+            columnNames.add(resultSet.getMetaData().getColumnName(i));
+        }
+
+        return columnNames;
+    }
+}
